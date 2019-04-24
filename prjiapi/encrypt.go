@@ -2,7 +2,6 @@ package prjiapi
 
 import (
 	"github.com/jamesruan/sodium"
-	//"encoding/base64"
 	//"C"
 	//"fmt"
 )
@@ -31,8 +30,11 @@ func PKEncrypt(data sodium.Bytes, receiverPublicKey sodium.BoxPublicKey, senderP
 /*
 	Uses public-key encryption to decrypt data.
 */
-func PKDecrypt(data EncryptedData, senderPublicKey sodium.BoxPublicKey, receiverPrivateKey sodium.BoxSecretKey) []byte {
-	return nil
+func PKDecrypt(rawdata ,rawnonce sodium.Bytes, senderPublicKey sodium.BoxPublicKey, receiverPrivateKey sodium.BoxSecretKey) ([]byte,error) {
+	nonce := sodium.BoxNonce{rawnonce}
+	//data := sodium.Bytes{rawdata}
+	decrypted,err := rawdata.BoxOpen(nonce,senderPublicKey,receiverPrivateKey)
+	return decrypted,err
 }
 
 /*
