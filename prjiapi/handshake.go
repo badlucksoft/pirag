@@ -12,7 +12,7 @@ var (
 	PRJI_CLIENT_SECRET string
 	PRJI_PRIVATE_KEY   string
 	PRJI_SIGNING_KEY   string
-	PRJI_ACCESS_TOKEN string
+	PRJI_ACCESS_TOKEN  string
 )
 
 type HandshakeRequest struct {
@@ -52,13 +52,13 @@ func PerformHandshake() {
 	var hsresp HandshakeResponse
 	json.Unmarshal(response, &hsresp)
 	fmt.Printf("reponse from server: %v\nerr: %v\n", hsresp, err)
-	atraw,err := base64.StdEncoding.DecodeString(hsresp.AccessToken)
-	atnraw,err := base64.StdEncoding.DecodeString(hsresp.EncryptNonce)
-	atsig,err := base64.StdEncoding.DecodeString(hsresp.Signature)
-if VerifySignature(atraw,sodium.Signature{atsig},sodium.SignPublicKey{servsignkey}) {
-	at,_ := PKDecrypt(atraw,atnraw,sodium.BoxPublicKey{servkey}, sodium.BoxSecretKey{privkey})
-	fmt.Printf("token: %s\n",at)
-	PRJI_ACCESS_TOKEN = string(at)
+	atraw, err := base64.StdEncoding.DecodeString(hsresp.AccessToken)
+	atnraw, err := base64.StdEncoding.DecodeString(hsresp.EncryptNonce)
+	atsig, err := base64.StdEncoding.DecodeString(hsresp.Signature)
+	if VerifySignature(atraw, sodium.Signature{atsig}, sodium.SignPublicKey{servsignkey}) {
+		at, _ := PKDecrypt(atraw, atnraw, sodium.BoxPublicKey{servkey}, sodium.BoxSecretKey{privkey})
+		fmt.Printf("token: %s\n", at)
+		PRJI_ACCESS_TOKEN = string(at)
 	} else {
 		fmt.Println("signature on access token didn't match")
 	}
