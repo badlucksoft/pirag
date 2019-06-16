@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"flag"
 	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/go-sql-driver/mysql"
 	"bufio"
 	"fmt"
 	"golang.org/x/crypto/ssh/terminal"
@@ -54,7 +56,7 @@ func init() {
 	requestPassword := false
 
 	//sql.Register("postgres",pq.Driver())
-	flag.StringVar(&DatabaseSystem, "dbsystem", default_database_system, "Database system: "+strings.Join(sql.Drivers(), ","))
+	flag.StringVar(&DatabaseSystem, "dbsystem", default_database_system, "Database system: "+strings.Join(sql.Drivers(), ", "))
 	flag.StringVar(&DatabaseFilename, "dbfile", default_database_file, "Database filename; only applicable for sqlite3 databases.")
 	flag.IntVar(&DatabaseType, "dbtype", default_database_type, "Database type 1 SSH only, 2 web only, 3 combined")
 	flag.StringVar(&SettingsFilename, "settings", default_settings_file, "Settings file name")
