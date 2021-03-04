@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
@@ -38,6 +39,7 @@ var (
 	SettingsFilename string
 	Command          string
 	SSHLogFile       string
+	LogYear int
 	AllSettings      map[string]string
 )
 
@@ -54,11 +56,12 @@ func init() {
 	AllSettings["DBPort"] = "0"
 	AllSettings["DBUser"] = ""
 	AllSettings["DBPassword"] = ""
+	
 	AllSettings["PGUseUUIDKeys"] = "0"
 	AllSettings["SSHLogFile"] = "/var/log/secure"
 	requestPassword := false
 
-	//sql.Register("postgres",pq.Driver())
+	//sql.Register("postgres",pq.Driver())	
 	flag.StringVar(&DatabaseSystem, "dbsystem", default_database_system, "Database system: "+strings.Join(sql.Drivers(), ", "))
 	flag.StringVar(&DatabaseFilename, "dbfile", default_database_file, "Database filename; only applicable for sqlite3 databases.")
 	flag.IntVar(&DatabaseType, "dbtype", default_database_type, "Database type 1 SSH only, 2 web only, 3 combined")
@@ -69,6 +72,7 @@ func init() {
 	flag.StringVar(&DatabaseUser, "dbuser", "", "Database user name")
 	flag.BoolVar(&requestPassword, "password", false, "Prompt for database password")
 	flag.StringVar(&SSHLogFile, "securelog", AllSettings["SSHLogFile"], "Log file containing SSH failures.")
+	flag.IntVar(&LogYear,"logyear",time.Now().Year(),"The year the log is from; defaults to current year.")
 	flag.Parse()
 	if Command != "" {
 		Command = strings.ToLower(Command)
@@ -162,7 +166,7 @@ func CreateSettings() bool {
 	if err == nil {
 		defer settingsFile.Close()
 		buf := bufio.NewWriter(settingsFile)
-		buf.WriteString("ClientID=MyClientID\nClientSecret=MyDomainSecretHash\nPrivateKey=MyPrivateKey\nSigningKey=MySigningKey\nDBSystem=" + default_database_system + "\nSQLiteDB=" + default_database_file + "\nDBType=" + strconv.Itoa(default_database_type) + "\n" + "DBHost=localhost\nDBPort=0\nDBName=prjindigo\nDBUser=piuser\nDBPassword=someBetterPassw0rD\nPGUseUUIDKeys=0\n")
+		buf.WriteString("ClientID=MyClientID\nClientSecret=MyDomainSecretHash\nPrivateKey=MyPrivateKey\nSigningKey=MySigningKey\nDBSystem=" + default_database_system + "\nSQLiteDB=" + default_database_file + "\nDBType=" + strconv.Itoa(default_database_type) + "\n" + "DBHost=localhost\nDBPort=0\nDBName=prjindigo\nDBUser=piuser\nDBPassword=someBetterPassw0rD\nPGUseUUIDKeys=0\nSSHLogFile=/var/log/secure\n")
 		buf.Flush()
 	} else {
 		log.Fatal("Couldn't create settings file; " + SettingsFilename)
