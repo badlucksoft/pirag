@@ -80,13 +80,13 @@ func ShutdownDB() {
 }
 func tableExists(tv, tableName string) bool {
 	var exists = false
-	fmt.Printf("\ttable/view:\t%s\n\tname:\t%s\n", tv, tableName)
+	//fmt.Printf("\ttable/view:\t%s\n\tname:\t%s\n", tv, tableName)
 	result, err := Stmts["queries"]["table_existence"].Query(tv, tableName)
-	fmt.Printf("tableExists %v\n%v\n", result, err)
+	//fmt.Printf("tableExists %v\n%v\n", result, err)
 	result.Next()
 	var e int
 	result.Scan(&e)
-	fmt.Printf("exists %d\n", e)
+	//fmt.Printf("exists %d\n", e)
 	if e == 1 {
 		exists = true
 	}
@@ -153,7 +153,7 @@ PrepareStatements Creates prepared statements for later, and possible repeated, 
 */
 func PrepareStatements() {
 	MinPrepareStatements()
-	fmt.Printf("DBObj (prepareStatements) %v\n", DBObj)
+	//fmt.Printf("DBObj (prepareStatements) %v\n", DBObj)
 
 	switch settings.AllSettings["DBSystem"] {
 	case "mysql":
@@ -343,11 +343,11 @@ func HandleReportResponses(responses []prjiapi.ReportResult) {
 				BeginTX()
 		for i := 0; i < len(responses); i++ {
 			if responses[i].Success {
-				fmt.Printf("SSH Attack ID %s was successful\n", responses[i].ID)
+				//fmt.Printf("SSH Attack ID %s was successful\n", responses[i].ID)
 			} else {
 				t := time.Now()
 				RecordReportSSHError(responses[i].ID, t.UTC().Format("2006-01-02 15:04:05-06"), responses[i].Error)
-				fmt.Printf("SSH Attack ID %s was failed: %s\n", responses[i].ID, responses[i].Error)
+				//fmt.Printf("SSH Attack ID %s was failed: %s\n", responses[i].ID, responses[i].Error)
 
 			}
 			Stmts["queries"]["flag_ssh_for_delete"].Exec(responses[i].ID)
@@ -370,7 +370,7 @@ func GetSSHAttacks(count, page int, descending bool) []prjiapi.Report {
 		for records.Next() {
 			defer records.Close()
 			var attack_id, addr_id, name_id, del int64
-			var times, addr, username string 
+			var times, addr, username string
 			var at time.Time
 			//attack_id,attack_timestamp,del,addr_id,addr,name_id,username
 			records.Scan(&attack_id, &times, &del, &addr_id, &addr, &name_id, &username)

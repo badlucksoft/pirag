@@ -3,8 +3,8 @@ package logproc
 import (
 	"bufio"
 	//"strings"
-	"fmt"
-	"github.com/badlucksoft/pirag/pidb"
+	//"fmt"
+	"pirag/pidb"
 	"os"
 	"regexp"
 )
@@ -36,13 +36,13 @@ func ProcessSSHLog(sshFileName string) int {
 			matches := re.FindStringSubmatch(line)
 			if matches != nil && len(matches) > 0 {
 				//fmt.Printf("Matching line %d!\n%v\t%v\t%v\n", len(matches), matches[1:6], matches[7], matches[8])
-				ipFound, ipID := pidb.FindIPAddr(matches[8])
+				ipFound, _/*ipID*/ := pidb.FindIPAddr(matches[8])
 				if ipFound == false {
-					ipID = pidb.AddIPAddr(matches[8])
+					/*ipID =*/ pidb.AddIPAddr(matches[8])
 				}
-				nameFound, nameID := pidb.FindUsername(matches[7])
+				nameFound,_ /* nameID*/ := pidb.FindUsername(matches[7])
 				if nameFound == false {
-					nameID = pidb.AddUsername(matches[7])
+					/*nameID =*/ pidb.AddUsername(matches[7])
 				}
 				//fmt.Printf("IP ID: %d\nName ID:  %d\n", ipID, nameID)
 				newRecords++
